@@ -1,9 +1,7 @@
 const Book = require('../models/Book');
 const Author = require('../models/Author');
 
-// @desc    Get all books with pagination and filtering
-// @route   GET /api/books
-// @access  Public for public route, Private for admin
+
 const getBooks = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -33,9 +31,7 @@ const getBooks = async (req, res) => {
   }
 };
 
-// @desc    Get single book
-// @route   GET /api/books/:id
-// @access  Public for public route, Private for admin
+
 const getBookById = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id).populate('authorId', 'name bio dob');
@@ -51,9 +47,7 @@ const getBookById = async (req, res) => {
   }
 };
 
-// @desc    Create a book
-// @route   POST /api/books
-// @access  Private
+
 const createBook = async (req, res) => {
   try {
     const { title, description, publishedYear, authorId } = req.body;
@@ -77,9 +71,7 @@ const createBook = async (req, res) => {
   }
 };
 
-// @desc    Update a book
-// @route   PUT /api/books/:id
-// @access  Private
+
 const updateBook = async (req, res) => {
   try {
     const { title, description, publishedYear, authorId } = req.body;

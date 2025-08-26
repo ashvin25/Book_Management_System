@@ -11,7 +11,12 @@ export const login = createAsyncThunk(
       const response = await axios.post(`${API_URL}/admin/login`, adminData);
       
       if (response.data) {
-        localStorage.setItem('admin', JSON.stringify(response.data));
+        // Store the current timestamp along with the admin data
+        const sessionData = {
+          ...response.data,
+          timestamp: Date.now() // Store the current time
+        };
+        localStorage.setItem('admin', JSON.stringify(sessionData));
       }
       
       return response.data;
@@ -32,11 +37,15 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   localStorage.removeItem('admin');
 });
 
-// Get stored admin from localStorage
-const admin = JSON.parse(localStorage.getItem('admin'));
+// Get stored admin from localStorage and check session validity
+const getValidAdmin = () => {
+  const admin = JSON.parse(localStorage.getItem('admin'));
+  const isSessionValid = admin && (Date.now() - admin.timestamp < 3600000); // 1 hour session validity, if want 10 min use (600000 ms)
+  return isSessionValid ? admin : null;
+};
 
 const initialState = {
-  admin: admin ? admin : null,
+  admin: getValidAdmin(),
   isError: false,
   isSuccess: false,
   isLoading: false,
